@@ -66,5 +66,27 @@ if ('serviceWorker' in navigator) {
     >
       Install App
     </button>
+    <div id="status" style="
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:12px;
+  background:#111;
+  color:#fff;
+"></div>
+
+<script>
+const status = document.getElementById('status');
+
+function updateStatus() {
+  status.textContent = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+}
+
+window.addEventListener('online', updateStatus);
+window.addEventListener('offline', updateStatus);
+updateStatus();
+</script>
   </body>
 </html>
