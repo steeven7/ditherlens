@@ -16,6 +16,7 @@ function openDB() {
   });
 }
 
+// NOTES
 export async function saveNote(note) {
   const db = await openDB();
   const tx = db.transaction('notes', 'readwrite');
@@ -30,6 +31,7 @@ export async function getNotes() {
   });
 }
 
+// QUEUE
 export async function queueRequest(data) {
   const db = await openDB();
   const tx = db.transaction('queue', 'readwrite');
@@ -48,6 +50,7 @@ export async function flushQueue(sendFn) {
       await sendFn(cursor.value);
       store.delete(cursor.key);
     } catch {}
+
     cursor.continue();
   };
 }
