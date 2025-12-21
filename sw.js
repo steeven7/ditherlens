@@ -1,14 +1,16 @@
-const STATIC_CACHE = 'ditherlens-static-v1';
-const DYNAMIC_CACHE = 'ditherlens-dynamic-v1';
+const STATIC_CACHE = 'ditherlens-static-v3';
+const DYNAMIC_CACHE = 'ditherlens-dynamic-v3';
+const BASE = '/ditherlens';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/assets/index-BxMmaYE-.css',
-  '/assets/index-C16FXxMU.js'
+  `${BASE}/`,
+  `${BASE}/index.html`,
+  `${BASE}/assets/index-BxMmaYE-.css`,
+  `${BASE}/assets/index-C16FXxMU.js`,
+  `${BASE}/manifest.webmanifest`
 ];
 
-// Install → cache static assets
+// INSTALL
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then(cache => cache.addAll(STATIC_ASSETS))
@@ -16,7 +18,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate → cleanup old caches
+// ACTIVATE
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -30,19 +32,18 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch strategies
+// FETCH
 self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
+  const url = new URL(event.request.url);
 
   // API → network-first
   if (url.pathname.startsWith('/api')) {
-    event.respondWith(networkFirst(request));
+    event.respondWith(networkFirst(event.request));
     return;
   }
 
   // Static → cache-first
-  event.respondWith(cacheFirst(request));
+  event.respondWith(cacheFirst(event.request));
 });
 
 async function cacheFirst(request) {
